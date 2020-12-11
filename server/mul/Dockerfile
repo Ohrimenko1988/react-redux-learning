@@ -1,4 +1,4 @@
-FROM bujhtr5555/base-calculator-image:latest
+FROM quay.io/ohrimenko1988/base-calculator-image:latest
 
 
 COPY . /usr/local/app
