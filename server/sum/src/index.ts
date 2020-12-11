@@ -1,13 +1,14 @@
 import express from "express";
+import { ProjectConstants } from "./ProjectConstants";
 const app = express();
-const port = 3434;
+const port = ProjectConstants.PROJECT_PORT;
 
 app.get("/", (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Content-Type", "application/json");
 
-    const firstNumber: number = Number.parseInt(req.query.FIRST_NUMBER, 10);
-    const secondNumber: number = Number.parseInt(req.query.SECOND_NUMBER, 10);
+    const firstNumber: number = Number.parseFloat(req.query.FIRST_NUMBER);
+    const secondNumber: number = Number.parseFloat(req.query.SECOND_NUMBER);
     const result: number = firstNumber + secondNumber;
 
     res.send(`${result}`);

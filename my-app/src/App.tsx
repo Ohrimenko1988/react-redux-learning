@@ -83,7 +83,6 @@ class App extends Component<any, State> {
       return;
     }
 
-
     if (this.state.mathAction === '') {
       this.setState({
         resultText: this.state.inputText + ` ${mathAction}`,
