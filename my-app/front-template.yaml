@@ -1,0 +1,126 @@
+#
+# Copyright (c) 2012-2018 Red Hat, Inc.
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: calc-front
+  annotations:
+    description: calc-front
+objects:
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: calc-front
+- apiVersion: v1
+  kind: RoleBinding
+  metadata:
+    name: calc-front
+  roleRef:
+    name: edit
+  subjects:
+  - kind: ServiceAccount
+    name: calc-front
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: calc-front-host
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 3000
+    selector:
+      app: calc-front
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: calc-front
+  spec:
+    to:
+      kind: Service
+      name: calc-front-host
+    port:
+      targetPort: http
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: calc-front
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      app: calc-front
+    template:
+      metadata:
+        labels:
+          app: calc-front
+      spec:
+        containers:
+        - env:
+          - name: ENV_EXAMPLE
+            value: "${ENV_EXAMPLE}"
+          image: bujhtr5555/calc-front:latest
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 50
+            failureThreshold: 3
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 25
+            timeoutSeconds: 5
+            failureThreshold: 5
+          name: calc-front
+          ports:
+          - containerPort: 3000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 256Mi
+          terminationMessagePath: "/dev/termination-log"
+          terminationMessagePolicy: File
+        restartPolicy: Always
+        serviceAccountName: calc-front
+        terminationGracePeriodSeconds: 360
+    triggers:
+    - type: ConfigChange
+
+parameters:
+- name: EXAMPLE_PARAMETER_1
+  displayName: EXAMPLE_PARAMETER_1
+  description: EXAMPLE_PARAMETER_1
+  value: ''
+- name: EXAMPLE_PARAMETER_2
+  displayName: EXAMPLE_PARAMETER_2
+  description: EXAMPLE_PARAMETER_2
+  value: ''
+- name: EXAMPLE_PARAMETER_3
+  displayName: EXAMPLE_PARAMETER_3
+  description: EXAMPLE_PARAMETER_3
+  value: ''
+- name: EXAMPLE_PARAMETER_4
+  displayName: EXAMPLE_PARAMETER_4
+  description: EXAMPLE_PARAMETER_4
+  value: ''
+labels:
+  app: calc-front
+  template: calc-front
