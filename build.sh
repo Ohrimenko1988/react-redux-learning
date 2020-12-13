@@ -1,6 +1,6 @@
 #!/bin/bash
 
-( cd my-app ; rm -rf dist node_modules ; npm install ; tsc)
+( cd my-app ; rm -rf dist node_modules ; npm install ; tsc ; npm run build )
 
 
 ( cd server/div ; rm -rf dist node_modules ; npm install ; tsc)

@@ -1,0 +1,363 @@
+#
+# Copyright (c) 2012-2018 Red Hat, Inc.
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: calc-front
+  annotations:
+    description: calc-front
+objects:
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: calc-front
+  - apiVersion: v1
+    kind: RoleBinding
+    metadata:
+      name: calc-front
+    roleRef:
+      name: edit
+    subjects:
+      - kind: ServiceAccount
+        name: calc-front
+####################################################
+###              server-div config               ### 
+####################################################
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: calc-server-div-host
+    spec:
+      ports:
+        - name: http
+          port: 3831
+          protocol: TCP
+          targetPort: 3831
+      selector:
+        app: calc-server-div
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: calc-server-div
+    spec:
+      to:
+        kind: Service
+        name: calc-server-div-host
+      port:
+        targetPort: http
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      name: calc-server-div
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 2
+      selector:
+        app: calc-server-div
+      template:
+        metadata:
+          labels:
+            app: calc-server-div
+        spec:
+          containers:
+            - env:
+                - name: ENV_EXAMPLE
+                  value: "${ENV_EXAMPLE}"
+              image: quay.io/ohrimenko1988/calculator-server-div:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health
+                  port: 3831
+                  scheme: HTTP
+                initialDelaySeconds: 50
+                failureThreshold: 3
+                timeoutSeconds: 2
+              readinessProbe:
+                httpGet:
+                  path: /health
+                  port: 3831
+                  scheme: HTTP
+                initialDelaySeconds: 25
+                timeoutSeconds: 5
+                failureThreshold: 5
+              name: calc-server-div
+              ports:
+                - containerPort: 3831
+                  name: http
+                  protocol: TCP
+              resources:
+                limits:
+                  memory: 4Gi
+                requests:
+                  memory: 1Gi
+              terminationMessagePath: "/dev/termination-log"
+              terminationMessagePolicy: File
+          restartPolicy: Always
+          serviceAccountName: calc-front
+          terminationGracePeriodSeconds: 360
+      triggers:
+        - type: ConfigChange
+####################################################
+###              server-mul config               ### 
+####################################################
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: calc-server-mul-host
+    spec:
+      ports:
+        - name: http
+          port: 3832
+          protocol: TCP
+          targetPort: 3832
+      selector:
+        app: calc-server-mul
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: calc-server-mul
+    spec:
+      to:
+        kind: Service
+        name: calc-server-mul-host
+      port:
+        targetPort: http
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      name: calc-server-mul
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 2
+      selector:
+        app: calc-server-mul
+      template:
+        metadata:
+          labels:
+            app: calc-server-mul
+        spec:
+          containers:
+            - env:
+                - name: ENV_EXAMPLE
+                  value: "${ENV_EXAMPLE}"
+              image: quay.io/ohrimenko1988/calculator-server-mul:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health
+                  port: 3832
+                  scheme: HTTP
+                initialDelaySeconds: 50
+                failureThreshold: 3
+                timeoutSeconds: 2
+              readinessProbe:
+                httpGet:
+                  path: /health
+                  port: 3832
+                  scheme: HTTP
+                initialDelaySeconds: 25
+                timeoutSeconds: 5
+                failureThreshold: 5
+              name: calc-server-mul
+              ports:
+                - containerPort: 3832
+                  name: http
+                  protocol: TCP
+              resources:
+                limits:
+                  memory: 4Gi
+                requests:
+                  memory: 1Gi
+              terminationMessagePath: "/dev/termination-log"
+              terminationMessagePolicy: File
+          restartPolicy: Always
+          serviceAccountName: calc-front
+          terminationGracePeriodSeconds: 360
+      triggers:
+        - type: ConfigChange
+####################################################
+###              server-sub config               ### 
+####################################################
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: calc-server-sub-host
+    spec:
+      ports:
+        - name: http
+          port: 3833
+          protocol: TCP
+          targetPort: 3833
+      selector:
+        app: calc-server-sub
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: calc-server-sub
+    spec:
+      to:
+        kind: Service
+        name: calc-server-sub-host
+      port:
+        targetPort: http
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      name: calc-server-sub
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 2
+      selector:
+        app: calc-server-sub
+      template:
+        metadata:
+          labels:
+            app: calc-server-sub
+        spec:
+          containers:
+            - env:
+                - name: ENV_EXAMPLE
+                  value: "${ENV_EXAMPLE}"
+              image: quay.io/ohrimenko1988/calculator-server-sub:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health
+                  port: 3833
+                  scheme: HTTP
+                initialDelaySeconds: 50
+                failureThreshold: 3
+                timeoutSeconds: 2
+              readinessProbe:
+                httpGet:
+                  path: /health
+                  port: 3833
+                  scheme: HTTP
+                initialDelaySeconds: 25
+                timeoutSeconds: 5
+                failureThreshold: 5
+              name: calc-server-sub
+              ports:
+                - containerPort: 3833
+                  name: http
+                  protocol: TCP
+              resources:
+                limits:
+                  memory: 4Gi
+                requests:
+                  memory: 1Gi
+              terminationMessagePath: "/dev/termination-log"
+              terminationMessagePolicy: File
+          restartPolicy: Always
+          serviceAccountName: calc-front
+          terminationGracePeriodSeconds: 360
+      triggers:
+        - type: ConfigChange
+####################################################
+###              server-sum config               ### 
+####################################################
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: calc-server-sum-host
+    spec:
+      ports:
+        - name: http
+          port: 3834
+          protocol: TCP
+          targetPort: 3834
+      selector:
+        app: calc-server-sum
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: calc-server-sum
+    spec:
+      to:
+        kind: Service
+        name: calc-server-sum-host
+      port:
+        targetPort: http
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      name: calc-server-sum
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 2
+      selector:
+        app: calc-server-sum
+      template:
+        metadata:
+          labels:
+            app: calc-server-sum
+        spec:
+          containers:
+            - env:
+                - name: ENV_EXAMPLE
+                  value: "${ENV_EXAMPLE}"
+              image: quay.io/ohrimenko1988/calculator-server-sum:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health
+                  port: 3834
+                  scheme: HTTP
+                initialDelaySeconds: 50
+                failureThreshold: 3
+                timeoutSeconds: 2
+              readinessProbe:
+                httpGet:
+                  path: /health
+                  port: 3834
+                  scheme: HTTP
+                initialDelaySeconds: 25
+                timeoutSeconds: 5
+                failureThreshold: 5
+              name: calc-server-sum
+              ports:
+                - containerPort: 3834
+                  name: http
+                  protocol: TCP
+              resources:
+                limits:
+                  memory: 4Gi
+                requests:
+                  memory: 1Gi
+              terminationMessagePath: "/dev/termination-log"
+              terminationMessagePolicy: File
+          restartPolicy: Always
+          serviceAccountName: calc-front
+          terminationGracePeriodSeconds: 360
+      triggers:
+        - type: ConfigChange
+#
+parameters:
+  - name: EXAMPLE_PARAMETER_1
+    displayName: EXAMPLE_PARAMETER_1
+    description: EXAMPLE_PARAMETER_1
+    value: ""
+  - name: EXAMPLE_PARAMETER_2
+    displayName: EXAMPLE_PARAMETER_2
+    description: EXAMPLE_PARAMETER_2
+    value: ""
+  - name: EXAMPLE_PARAMETER_3
+    displayName: EXAMPLE_PARAMETER_3
+    description: EXAMPLE_PARAMETER_3
+    value: ""
+  - name: EXAMPLE_PARAMETER_4
+    displayName: EXAMPLE_PARAMETER_4
+    description: EXAMPLE_PARAMETER_4
+    value: ""
+labels:
+  app: calc-front
+  template: calc-front

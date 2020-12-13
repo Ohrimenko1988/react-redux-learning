@@ -14,6 +14,13 @@ app.get("/", (req, res) => {
     res.send(`${result}`);
 });
 
+app.get("/health", (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "application/json");
+
+    res.send(`It is up and run`);
+});
+
 // start the Express server
 app.listen(port, async () => {
     // tslint:disable-next-line:no-console

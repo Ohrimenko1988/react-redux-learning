@@ -1,0 +1,113 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: calc-front
+  annotations:
+    description: calc-front
+objects:
+####################################################
+###              front-end config                ### 
+####################################################
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: calc-front-host
+    spec:
+      ports:
+        - name: http
+          port: 8080
+          protocol: TCP
+          targetPort: 3000
+      selector:
+        app: calc-front
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: calc-front
+    spec:
+      to:
+        kind: Service
+        name: calc-front-host
+      port:
+        targetPort: http
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      name: calc-front
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 2
+      selector:
+        app: calc-front
+      template:
+        metadata:
+          labels:
+            app: calc-front
+        spec:
+          containers:
+            - env:
+                - name: DIV_REQUEST_URL
+                  value: ${DIV_REQUEST_URL}
+                - name: MUL_REQUEST_URL
+                  value: ${MUL_REQUEST_URL}
+                - name: SUB_REQUEST_URL
+                  value: ${SUB_REQUEST_URL}
+                - name: SUM_REQUEST_URL
+                  value: ${SUM_REQUEST_URL}
+              image: quay.io/ohrimenko1988/calc-front:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /
+                  port: 3000
+                  scheme: HTTP
+                initialDelaySeconds: 50
+                failureThreshold: 3
+                timeoutSeconds: 2
+              readinessProbe:
+                httpGet:
+                  path: /
+                  port: 3000
+                  scheme: HTTP
+                initialDelaySeconds: 25
+                timeoutSeconds: 5
+                failureThreshold: 5
+              name: calc-front
+              ports:
+                - containerPort: 3000
+                  name: http
+                  protocol: TCP
+              resources:
+                limits:
+                  memory: 4Gi
+                requests:
+                  memory: 1Gi
+              terminationMessagePath: "/dev/termination-log"
+              terminationMessagePolicy: File
+          restartPolicy: Always
+          serviceAccountName: calc-front
+          terminationGracePeriodSeconds: 360
+      triggers:
+        - type: ConfigChange
+#
+parameters:
+  - name: DIV_REQUEST_URL
+    displayName: DIV_REQUEST_URL
+    description: 
+    value: ""
+  - name: MUL_REQUEST_URL
+    displayName: MUL_REQUEST_URL
+    description: 
+    value: ""
+  - name: SUB_REQUEST_URL
+    displayName: SUB_REQUEST_URL
+    description: 
+    value: ""
+  - name: SUM_REQUEST_URL
+    displayName: SUM_REQUEST_URL
+    description: 
+    value: ""
+labels:
+  app: calc-front
+  template: calc-front
