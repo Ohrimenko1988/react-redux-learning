@@ -3,10 +3,9 @@
 SERVER_URL="https://api.ocp46.crw-qe.com:6443"
 USER_NAME="admin"
 USER_PASSWORD=""
-APPLICATION_NAMESPACE=""
+APPLICATION_NAMESPACE="iokhrime-perf-dev"
 
 
-oc login --server=$SERVER_URL -u=$USER_NAME -p=$USER_PASSWORD --insecure-skip-tls-verify
 oc new-app -n $APPLICATION_NAMESPACE -f ocp/servers-template.yaml
 
 
@@ -30,22 +29,22 @@ done
 echo 1
 
 
-export DIV_REQUEST_URL="$(oc get routes calc-server-div -o jsonpath="{.spec.port.targetPort}" -n $APPLICATION_NAMESPACE)://$(oc get routes calc-server-div -o jsonpath="{.spec.host}" -n $APPLICATION_NAMESPACE)"
-export MUL_REQUEST_URL="$(oc get routes calc-server-mul -o jsonpath="{.spec.port.targetPort}" -n $APPLICATION_NAMESPACE)://$(oc get routes calc-server-mul -o jsonpath="{.spec.host}" -n $APPLICATION_NAMESPACE)"
-export SUB_REQUEST_URL="$(oc get routes calc-server-sub -o jsonpath="{.spec.port.targetPort}" -n $APPLICATION_NAMESPACE)://$(oc get routes calc-server-sub -o jsonpath="{.spec.host}" -n $APPLICATION_NAMESPACE)"
-export SUM_REQUEST_URL="$(oc get routes calc-server-sum -o jsonpath="{.spec.port.targetPort}" -n $APPLICATION_NAMESPACE)://$(oc get routes calc-server-sum -o jsonpath="{.spec.host}" -n $APPLICATION_NAMESPACE)"
+export REACT_APP_DIV_REQUEST_URL="$(oc get routes calc-server-div -o jsonpath="{.spec.port.targetPort}" -n $APPLICATION_NAMESPACE)://$(oc get routes calc-server-div -o jsonpath="{.spec.host}" -n $APPLICATION_NAMESPACE)"
+export REACT_APP_MUL_REQUEST_URL="$(oc get routes calc-server-mul -o jsonpath="{.spec.port.targetPort}" -n $APPLICATION_NAMESPACE)://$(oc get routes calc-server-mul -o jsonpath="{.spec.host}" -n $APPLICATION_NAMESPACE)"
+export REACT_APP_SUB_REQUEST_URL="$(oc get routes calc-server-sub -o jsonpath="{.spec.port.targetPort}" -n $APPLICATION_NAMESPACE)://$(oc get routes calc-server-sub -o jsonpath="{.spec.host}" -n $APPLICATION_NAMESPACE)"
+export REACT_APP_SUM_REQUEST_URL="$(oc get routes calc-server-sum -o jsonpath="{.spec.port.targetPort}" -n $APPLICATION_NAMESPACE)://$(oc get routes calc-server-sum -o jsonpath="{.spec.host}" -n $APPLICATION_NAMESPACE)"
 
 
-echo $DIV_REQUEST_URL
-echo $MUL_REQUEST_URL
-echo $SUB_REQUEST_URL
-echo $SUM_REQUEST_URL
+echo $REACT_APP_DIV_REQUEST_URL
+echo $REACT_APP_MUL_REQUEST_URL
+echo $REACT_APP_SUB_REQUEST_URL
+echo $REACT_APP_SUM_REQUEST_URL
 
 echo 2
 
 
 
-oc new-app -n $APPLICATION_NAMESPACE -p DIV_REQUEST_URL=$DIV_REQUEST_URL -p MUL_REQUEST_URL=$MUL_REQUEST_URL -p SUB_REQUEST_URL=$SUB_REQUEST_URL -p SUM_REQUEST_URL=$SUM_REQUEST_URL -f ocp/front-template.yaml
+oc new-app -n $APPLICATION_NAMESPACE -p REACT_APP_DIV_REQUEST_URL=$REACT_APP_DIV_REQUEST_URL -p REACT_APP_MUL_REQUEST_URL=$REACT_APP_MUL_REQUEST_URL -p REACT_APP_SUB_REQUEST_URL=$REACT_APP_SUB_REQUEST_URL -p REACT_APP_SUM_REQUEST_URL=$REACT_APP_SUM_REQUEST_URL -f ocp/front-template.yaml
 
 IS_POD_RUNNING=""
 

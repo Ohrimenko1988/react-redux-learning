@@ -5,7 +5,6 @@ import axios from 'axios'
 import Message from './Message';
 import Button from './elements/buttons/Button';
 import Screen from './elements/screens/Screen';
-import { ProjectConstants } from './ProjectConstants';
 
 
 export enum MathAction {
@@ -131,9 +130,14 @@ class App extends Component<any, State> {
   }
 
   private async sendRequest(url: string, headerOpt: any): Promise<string> {
-    return axios.get(url, headerOpt).then((resp): string => {
-      return resp.data
-    })
+    if(url){
+      return axios.get(url, headerOpt).then((resp): string => {
+        return resp.data
+      })
+    }
+
+    throw new Error('Request URL is undefined, specify request URL');
+
   }
 
   private async calculateResult(firstNumber: number, secondNumber: number, mathAction: string): Promise<string> {
@@ -146,23 +150,27 @@ class App extends Component<any, State> {
 
 
     if (mathAction === MathAction.DIV) {
+      const divRequestUrl: string = process.env.REACT_APP_DIV_REQUEST_URL || ''
 
-      return this.sendRequest(ProjectConstants.DIV_REQUEST_URL, requestParams);
+      return this.sendRequest(divRequestUrl, requestParams);
     }
 
     if (mathAction === MathAction.MUL) {
+      const mulRequestUrl: string = process.env.REACT_APP_MUL_REQUEST_URL || ''
 
-      return this.sendRequest(ProjectConstants.MUL_REQUEST_URL, requestParams);
+      return this.sendRequest(mulRequestUrl, requestParams);
     }
 
     if (mathAction === MathAction.SUB) {
+      const subRequestUrl: string = process.env.REACT_APP_SUB_REQUEST_URL || ''
 
-      return this.sendRequest(ProjectConstants.SUB_REQUEST_URL, requestParams);
+      return this.sendRequest(subRequestUrl, requestParams);
     }
 
     if (mathAction === MathAction.SUM) {
+      const sumRequestUrl: string = process.env.REACT_APP_SUM_REQUEST_URL || ''
 
-      return this.sendRequest(ProjectConstants.SUM_REQUEST_URL, requestParams);
+      return this.sendRequest(sumRequestUrl, requestParams);
     }
 
     throw new Error('Unexpected error in the \'calculateResult\' method');
@@ -173,6 +181,11 @@ class App extends Component<any, State> {
 
 
   render() {
+
+    console.log("================");
+    console.log(process.env);
+    console.log("================");
+
     return (
       <div className="App">
         <div className="Body">

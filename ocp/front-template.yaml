@@ -47,14 +47,14 @@ objects:
         spec:
           containers:
             - env:
-                - name: DIV_REQUEST_URL
-                  value: ${DIV_REQUEST_URL}
-                - name: MUL_REQUEST_URL
-                  value: ${MUL_REQUEST_URL}
-                - name: SUB_REQUEST_URL
-                  value: ${SUB_REQUEST_URL}
-                - name: SUM_REQUEST_URL
-                  value: ${SUM_REQUEST_URL}
+                - name: REACT_APP_DIV_REQUEST_URL
+                  value: ${REACT_APP_DIV_REQUEST_URL}
+                - name: REACT_APP_MUL_REQUEST_URL
+                  value: ${REACT_APP_MUL_REQUEST_URL}
+                - name: REACT_APP_SUB_REQUEST_URL
+                  value: ${REACT_APP_SUB_REQUEST_URL}
+                - name: REACT_APP_SUM_REQUEST_URL
+                  value: ${REACT_APP_SUM_REQUEST_URL}
               image: quay.io/ohrimenko1988/calc-front:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -92,20 +92,20 @@ objects:
         - type: ConfigChange
 #
 parameters:
-  - name: DIV_REQUEST_URL
-    displayName: DIV_REQUEST_URL
+  - name: REACT_APP_DIV_REQUEST_URL
+    displayName: REACT_APP_DIV_REQUEST_URL
     description: 
     value: ""
-  - name: MUL_REQUEST_URL
-    displayName: MUL_REQUEST_URL
+  - name: REACT_APP_MUL_REQUEST_URL
+    displayName: REACT_APP_MUL_REQUEST_URL
     description: 
     value: ""
-  - name: SUB_REQUEST_URL
-    displayName: SUB_REQUEST_URL
+  - name: REACT_APP_SUB_REQUEST_URL
+    displayName: REACT_APP_SUB_REQUEST_URL
     description: 
     value: ""
-  - name: SUM_REQUEST_URL
-    displayName: SUM_REQUEST_URL
+  - name: REACT_APP_SUM_REQUEST_URL
+    displayName: REACT_APP_SUM_REQUEST_URL
     description: 
     value: ""
 labels:
